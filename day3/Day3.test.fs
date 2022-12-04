@@ -11,9 +11,9 @@ let tests =
 
           testCase "Maps priorities"
           <| fun _ ->
-              Expect.equal priorities.['a'] 1 "a"
-              Expect.equal priorities.['A'] 27 "A"
-              Expect.equal priorities.['Z'] 52 "Z"
+              Expect.equal priorities['a'] 1 "a"
+              Expect.equal priorities['A'] 27 "A"
+              Expect.equal priorities['Z'] 52 "Z"
 
           testCase "Parse one ruck sack"
           <| fun _ ->
