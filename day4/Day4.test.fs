@@ -25,9 +25,9 @@ let tests =
 
           testCase "tells if one section includes other"
           <| fun _ ->
-              Expect.isTrue (Sections.anyContains ((1, 5), (2, 4))) ""
-              Expect.isTrue (Sections.anyContains ((2, 4), (1, 5))) ""
-              Expect.isFalse (Sections.anyContains ((1, 2), (3, 4))) ""
+              Expect.isTrue (Sections.anyContainsFully ((1, 5), (2, 4))) ""
+              Expect.isTrue (Sections.anyContainsFully ((2, 4), (1, 5))) ""
+              Expect.isFalse (Sections.anyContainsFully ((1, 2), (3, 4))) ""
 
           testCase "round 1 works for example"
           <| fun _ ->

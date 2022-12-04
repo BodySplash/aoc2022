@@ -20,11 +20,13 @@ module Sections =
     let overlaps (first, other) = (overlap first other) > 0
 
     let private size (a, b) = (b - a) + 1
-    let private contains (first, other) = (overlap first other) = size other
 
-    let anyContains (first, other) =
-        [ (first, other); (other, first) ]
-        |> List.exists contains
+    let anyContainsFully (first, other) =
+        let overlapSize = (overlap first other)
+
+        overlapSize = size other
+        || overlapSize = size first
+
 
 let private inputPath =
     __SOURCE_DIRECTORY__ + "/input.txt"
@@ -32,7 +34,7 @@ let private inputPath =
 let round1 rows =
     rows
     |> Seq.map Input.parseLine
-    |> Seq.filter Sections.anyContains
+    |> Seq.filter Sections.anyContainsFully
     |> Seq.length
 
 let round2 rows =
