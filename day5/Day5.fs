@@ -21,26 +21,11 @@ module Inputs =
               yield! transpose (List.map List.tail xs) ]
 
     let private parseStackLine s =
-        let mutable finished = false
-        let mutable s = s |> List.ofSeq
-        let mutable pos = 0
-        let mutable result = []
-
-        while not finished do
-            if pos % 2 = 0 then
-                match s with
-                | _ :: v :: _ :: tail ->
-                    s <- tail
-                    result <- v :: result
-                | _ -> finished <- true
-            else
-                match s with
-                | [] -> ()
-                | _ -> s <- List.tail s
-
-            pos <- pos + 1
-
-        List.rev result
+        s
+        |> Seq.indexed
+        |> Seq.filter (fun (i, _) -> i % 4 = 1)
+        |> Seq.map snd
+        |> Seq.toList
 
     let private (|Stack|_|) (input: string) =
         if (input.Contains "[") then
