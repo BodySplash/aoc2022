@@ -1,6 +1,7 @@
 module AoC2022.Day6
 
 open AoC2022.utils
+open FSharpPlus
 
 let private inputPath =
     __SOURCE_DIRECTORY__ + "/input.txt"
@@ -9,7 +10,7 @@ let private inputPath =
 let findMarker count input = 
     input
         |> Seq.windowed count
-        |> Seq.map (Set.ofArray >> Set.count)
+        |> map (Set.ofArray >> Set.count)
         |> Seq.findIndex ((=) count)
         |> (+) count
 let findStartPacket = findMarker 4
@@ -19,7 +20,7 @@ let inputs = readRows inputPath
 
 let round1Result =
     inputs
-    |> Seq.map findStartPacket
+    |> map findStartPacket
     |> Seq.tryExactlyOne
 
 let round2Result =

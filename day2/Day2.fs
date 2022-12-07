@@ -19,7 +19,7 @@ type Turn = Turn of Figure * Figure
 type RealTurn = RealTurn of Figure * Strategy
 
 
-module Figure = 
+module Figure =
     let parse =
         function
         | "A"
@@ -50,9 +50,10 @@ module Score =
         | _ -> 0
 
 
-    let private turnValues = function
-        | Turn(f, f2) -> (f, f2)
-    
+    let private turnValues =
+        function
+        | Turn (f, f2) -> (f, f2)
+
     let fromTurn (turn: Turn) =
         let _, p2 = turnValues turn
         (int p2) + (rawScore turn)
@@ -62,28 +63,20 @@ module Score =
 module Round1 =
     let parseTurn (v: string) =
         let r =
-            v
-            |> String.split [ " " ]
-            |> Seq.map Figure.parse
-            |> Seq.toList
-            |> sequence
+            v |> split [ " " ] |> map Figure.parse |> sequence
 
         match r with
         | Some [ first; second ] -> Some(Turn(first, second))
         | _ -> None
 
     let parseTurns (v: string seq) =
-        v
-        |> Seq.map parseTurn
-        |> sequence
-        |> Option.map Seq.toList
+        v |> map parseTurn |> sequence |> map toList
 
 [<RequireQualifiedAccess>]
 module Round2 =
 
     let parseTurn (v: string) =
-        let split =
-            v |> String.split [ " " ] |> Seq.toList
+        let split = v |> split [ " " ]
 
         let r =
             match split with
@@ -116,11 +109,7 @@ module Round2 =
         | RealTurn (f, Lose) -> Turn(f, looseMove f)
 
 
-    let parseTurns (v: string seq) =
-        v
-        |> Seq.map parseTurn
-        |> sequence
-        |> Option.map Seq.toList
+    let parseTurns (v: string seq) = v |> map parseTurn |> sequence
 
 
 
@@ -132,14 +121,13 @@ let private inputPath =
 let round1 =
     readRows inputPath
     |> Round1.parseTurns
-    |> Option.apply (Option.Some((Seq.map Score.fromTurn) >> Seq.sum))
+    |> (<*>) (Some((map Score.fromTurn) >> sum))
+
+
+let computeMovesAndScore =
+    map (Round2.computeMove >> Score.fromTurn) >> sum
 
 let round2 =
     readRows inputPath
     |> Round2.parseTurns
-    |> Option.apply (
-        Option.Some(
-            Seq.map (Round2.computeMove >> Score.fromTurn)
-            >> Seq.sum
-        )
-    )
+    |> (<*>) (Some computeMovesAndScore)

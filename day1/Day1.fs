@@ -14,11 +14,11 @@ let (|Calories|_|): _ -> UInt32 option =
 
 let rows =
     readRows inputPath
-    |> Seq.map (fun l ->
+    |> map (fun l ->
         match l with
         | Calories v -> Some v
         | _ -> None)
-    |> Seq.toList
+    |> toList
 
 
 let rec groupElves (data: UInt32 option list) (acc: UInt32 list list) =
@@ -31,10 +31,9 @@ let rec groupElves (data: UInt32 option list) (acc: UInt32 list list) =
 
 let summedCalories =
     groupElves rows [ [] ]
-    |> Seq.map Seq.sum
+    |> Seq.map sum
     |> Seq.sortDescending
 
-let round1 = summedCalories |> Seq.head
+let round1 = summedCalories |> head
 
-let round2 =
-    summedCalories |> Seq.take 3 |> Seq.sum
+let round2 = summedCalories |> take 3 |> sum

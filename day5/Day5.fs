@@ -17,19 +17,19 @@ module Inputs =
           | [] -> failwith "cannot transpose a 0-by-n matrix"
           | [] :: _ -> ()
           | xs ->
-              yield List.map List.head xs
-              yield! transpose (List.map List.tail xs) ]
+              yield map head xs
+              yield! transpose (map List.tail xs) ]
 
     let private parseStackLine s =
         s
         |> Seq.indexed
-        |> Seq.filter (fun (i, _) -> i % 4 = 1)
-        |> Seq.map snd
-        |> Seq.toList
+        |> filter (fst >> ((flip (%)) 4 >> (=) 1)) //(fun (i, _) -> i % 4 = 1)
+        |> map snd
+        |> toList
 
     let private (|Stack|_|) (input: string) =
         if (input.Contains "[") then
-            Option.Some(parseStackLine input)
+            Some(parseStackLine input)
         else
             None
 
@@ -70,10 +70,10 @@ module Inputs =
                 | _ -> ()
 
         (stacks
-         |> List.rev
+         |> rev
          |> transpose
-         |> List.map (List.filter ((<>) ' ')),
-         instructions |> List.rev)
+         |> map (filter ((<>) ' ')),
+         instructions |> rev)
 
 module Crane =
 
@@ -126,14 +126,14 @@ let inputs =
 
 let round1 (stacks, moves) =
     (Crane.applyMoves stacks moves)
-    |> List.map List.head
-    |> List.map string
+    |> map List.head
+    |> map string
     |> String.concat ""
 
 let round2 (stacks, moves) =
     (Crane.applyMoves9001 stacks moves)
-    |> List.map List.head
-    |> List.map string
+    |> map head
+    |> map string
     |> String.concat ""
 
 let round1Result = inputs |> round1

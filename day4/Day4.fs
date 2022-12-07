@@ -10,7 +10,7 @@ module Input =
             |> String.split [ "-"; "," ]
             |> Seq.map int
             |> Seq.chunkBySize 2
-            |> Seq.map (fun e -> (Array.head e, Array.last e))
+            |> map (fun e -> (Array.head e, Array.last e))
 
         (head s, Seq.last s)
 
@@ -33,15 +33,15 @@ let private inputPath =
 
 let round1 rows =
     rows
-    |> Seq.map Input.parseLine
-    |> Seq.filter Sections.anyContainsFully
-    |> Seq.length
+    |> map Input.parseLine
+    |> filter Sections.anyContainsFully
+    |> length
 
 let round2 rows =
     rows
-    |> Seq.map Input.parseLine
-    |> Seq.filter Sections.overlaps
-    |> Seq.length
+    |> map Input.parseLine
+    |> filter Sections.overlaps
+    |> length
 
 let round1Result =
     readRows inputPath |> round1
