@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <GenerateProgramFile>false</GenerateProgramFile>
     </PropertyGroup>
 
@@ -30,15 +30,18 @@
         <Compile Include="day7\Day7.fs" />
         <Content Include="day7\input.txt" />
         <Compile Include="day7\Day7.test.fs" />
+        <Content Include="day8\input.txt" />
+        <Compile Include="day8\Day8.fs" />
+        <Compile Include="day8\Day8.test.fs" />
         <Compile Include="Main.fs" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Expecto" Version="9.0.4" />
         <PackageReference Include="FSharp.Data" Version="6.0.1-beta001" />
-        <PackageReference Include="FSharpPlus" Version="1.3.0-CI02919" />
-        <PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.*" />
+        <PackageReference Include="FSharpPlus" Version="1.3.2" />
+        <PackageReference Include="YoloDev.Expecto.TestSdk" Version="0.13.3" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
-        <PackageReference Update="FSharp.Core" Version="6.*" />
+        <PackageReference Update="FSharp.Core" Version="7.0.0" />
     </ItemGroup>
 </Project>

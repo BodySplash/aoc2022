@@ -2,7 +2,6 @@ module AoC2022.day7.Day7_test
 
 open Expecto
 open AoC2022.Day7
-open FSharpPlus.Control
 
 let sample =
     [ "$ cd /"
