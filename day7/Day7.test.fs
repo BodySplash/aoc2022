@@ -96,4 +96,4 @@ let tests =
 
               Expect.equal r (Some 24933642) ""
           testCase "Round 2 result"
-          <| fun _ -> Expect.equal round2Result (Some 42) "ok" ]
+          <| fun _ -> Expect.equal round2Result (Some 9847279) "ok" ]

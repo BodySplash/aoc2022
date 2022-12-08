@@ -79,11 +79,11 @@ module FileSystem =
         | _ -> false
 
     let fold f state node =
-        let rec folder path s' node' =
+        let rec folder (path: string array) s' node' =
             match node' with
             | File _ as current -> f s' path current
             | Directory (name, elems) as d ->
-                let currPath = [ name ] |> List.append path
+                let currPath = Array.append path [| name |]
                 let newState = f s' path d
 
                 let fileStates =
@@ -95,9 +95,9 @@ module FileSystem =
                 |> filter isDirectory
                 |> List.fold (folder currPath) fileStates
 
-        folder [] state node
+        folder [||] state node
 
-    let private concatPaths pathes = pathes |> String.concat "/"
+    let private concatPaths paths = paths |> String.concat "/"
 
     let appendToPath path name =
         (List.append path [ name ]) |> concatPaths
@@ -113,7 +113,7 @@ module FileSystem =
 
         let rec updatePaths acc paths value =
             match paths with
-            | [] -> acc
+            | [||] -> acc
             | _ ->
                 let newAcc =
                     Map.change
@@ -121,18 +121,14 @@ module FileSystem =
                         (fun v ->
                             match v with
                             | Some c -> Some(c + value)
-                            | _ -> None)
+                            | _ -> Some value)
                         acc
-
-                updatePaths newAcc (List.take ((List.length paths) - 1) paths) value
+                
+                updatePaths newAcc (paths[.. (Array.length paths) - 2]) value
 
         let walker acc path f =
             match f with
-            | Directory (s, _) ->
-                let acc =
-                    Map.add (appendToPath path s) 0 acc
-
-                acc
+            | Directory _ -> acc
             | File (_, i) -> updatePaths acc path i
 
         fold walker (Map []) root
