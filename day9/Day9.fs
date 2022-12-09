@@ -4,6 +4,10 @@ open System.Text.RegularExpressions
 open FSharpPlus
 open AoC2022.utils
 
+type Position = int * int
+
+type Rope = Position * Position list
+
 type Direction =
     | RIGHT
     | DOWN
@@ -11,7 +15,6 @@ type Direction =
     | UP
 
 type Move = Direction * int
-let allDirections = [ RIGHT; DOWN; LEFT; UP ]
 
 let private allMoves =
     [ [ RIGHT ]
@@ -36,12 +39,9 @@ module Move =
         | "U" -> (Direction.UP, int m.Groups[2].Value)
         | "L" -> (Direction.LEFT, int m.Groups[2].Value)
         | "R" -> (Direction.RIGHT, int m.Groups[2].Value)
+        | _ -> failwith "nop"
 
     let parse s : Move seq = s |> Seq.map parseOne
-
-type Position = int * int
-
-type Rope = Position * Position
 
 module Position =
     let move (x, y) d =
@@ -63,32 +63,43 @@ module Position =
 module Rope =
 
     let findNextTail (head: Position) (tail: Position) =
-        let p =
-            match head, tail with
-            | (hx, hy), (tx, ty) when hx = tx && hy > ty -> (tx, ty + 1)
-            | (hx, hy), (tx, ty) when hx = tx && hy < ty -> (tx, ty - 1)
-            | (hx, hy), (tx, ty) when hy = ty && hx > tx -> (tx + 1, ty)
-            | (hx, hy), (tx, ty) when hy = ty && hx < tx -> (tx - 1, ty)
-            | _ ->
-                let possibleMoves =
-                    (Position.neighbours head)
-                    |> Set.ofList
-                    |> Set.intersect (Position.neighbours tail |> Set.ofList)
+        match head, tail with
+        | (hx, hy), (tx, ty) when hx = tx && hy > ty -> (tx, ty + 1)
+        | (hx, hy), (tx, ty) when hx = tx && hy < ty -> (tx, ty - 1)
+        | (hx, hy), (tx, ty) when hy = ty && hx > tx -> (tx + 1, ty)
+        | (hx, hy), (tx, ty) when hy = ty && hx < tx -> (tx - 1, ty)
+        | _ ->
+            let possibleMoves =
+                (Position.neighbours head)
+                |> Set.ofList
+                |> Set.intersect (Position.neighbours tail |> Set.ofList)
 
+            if Set.count possibleMoves = 1 then
+                possibleMoves |> Set.toList |> List.head
+            else
                 possibleMoves
                 |> filter (fun (x, y) -> x = (fst head) || y = (snd head))
                 |> Seq.head
 
-        p
+
 
 
     let move ((head, tail): Rope) (d: Direction) =
-        let newHead = Position.move head d
+        let rec moveTail' tail' curr acc =
+            match tail' with
+            | k :: rest ->
+                let newK =
+                    if (Position.touching curr k) then
+                        k
+                    else
+                        (findNextTail curr k)
 
-        if (Position.touching newHead tail) then
-            (newHead, tail)
-        else
-            (newHead, (findNextTail newHead tail))
+                moveTail' rest newK (newK :: acc)
+            | [] -> acc
+
+        let newHead = Position.move head d
+        let newTail = (moveTail' tail newHead []) |> List.rev
+        (newHead, newTail)
 
     let trail (r: Rope) (moves: Move seq) =
         let flattenMoves =
@@ -98,12 +109,19 @@ module Rope =
 
 let private inputPath = __SOURCE_DIRECTORY__ + "/input.txt"
 
-let round1 i =
+let round (initial: Rope) (i: string seq) =
     i
     |> Move.parse
-    |> Rope.trail ((0, 0), (0, 0))
+    |> Rope.trail initial
     |> Seq.map snd
+    |> Seq.map (List.rev >> List.head)
     |> Set.ofSeq
     |> Seq.length
 
+let round1 i = i |> round ((0, 0), [ (0, 0) ])
+
+let round2 i =
+    i |> round (((0, 0), (Seq.replicate 9 (0, 0)) |> Seq.toList))
+
 let round1Result = readRows inputPath |> round1
+let round2Result = readRows inputPath |> round2

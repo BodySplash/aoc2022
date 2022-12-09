@@ -23,7 +23,30 @@ let tests =
               let result = sample |> round1
 
               Expect.equal result 13 "Count"
-          
-          testCase "Round 1" <| fun _ ->
-              Expect.equal round1Result 5902 "Round 1"
+
+          testCase "Round 1" <| fun _ -> Expect.equal round1Result 5902 "Round 1"
+
+          testCase "Round 2 works on sample"
+          <| fun _ ->
+              let sample =
+                  [ "R 5"
+                    "U 8"
+                    "L 8"
+                    "D 3"
+                    "R 17"
+                    "D 10"
+                    "L 25"
+                    "U 20"
+
+                    ]
+
+              let initial = ((0, 0), (Seq.replicate 9 (0, 0)) |> Seq.toList)
+
+
+              let result = sample |> round initial
+
+              Expect.equal result 36 "Count"
+              
+          testCase "Round 2" <| fun _ -> Expect.equal round2Result 2445 "Round 2"
+              
               ]
