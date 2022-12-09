@@ -27,8 +27,6 @@ let private allMoves =
       [ LEFT; UP ]
       [ LEFT; DOWN ] ]
 
-
-
 module Move =
 
     let private parseOne v =
@@ -44,7 +42,7 @@ module Move =
 
     let parse s : Move seq = s |> Seq.map parseOne
 
-    let flatten moves =
+    let expand moves =
         moves |> Seq.map (fun (dir, steps) -> Seq.replicate steps dir) |> Seq.concat
 
 module Position =
@@ -92,8 +90,8 @@ module Rope =
         let newTail = (move' newHead tail []) |> List.rev
         (newHead, newTail)
 
-    let trail (r: Rope) (moves: Move seq) =
-        moves |> Move.flatten |> Seq.scan move r
+    let trail (rope: Rope) (moves: Move seq) =
+        moves |> Move.expand |> Seq.scan move rope
 
 let private inputPath = __SOURCE_DIRECTORY__ + "/input.txt"
 
