@@ -1,7 +1,6 @@
 module AoC2022.Day1
 
 open System
-open AoC2022.utils
 open FSharpPlus
 
 [<Literal>]

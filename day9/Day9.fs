@@ -30,15 +30,16 @@ let private allMoves =
 module Move =
 
     let private parseOne v =
-        let r = Regex @"(.) (\d+)"
-        let m = r.Match v
+        match v with
+        | Regex @"(.) (\d+)" [ c; count ] ->
+            match c with
+            | "D" -> (Direction.DOWN, int count)
+            | "U" -> (Direction.UP, int count)
+            | "L" -> (Direction.LEFT, int count)
+            | "R" -> (Direction.RIGHT, int count)
+            | _ -> failwith "nop"
+        | _ -> failwith "Nop"
 
-        match m.Groups[1].Value with
-        | "D" -> (Direction.DOWN, int m.Groups[2].Value)
-        | "U" -> (Direction.UP, int m.Groups[2].Value)
-        | "L" -> (Direction.LEFT, int m.Groups[2].Value)
-        | "R" -> (Direction.RIGHT, int m.Groups[2].Value)
-        | _ -> failwith "nop"
 
     let parse s : Move seq = s |> Seq.map parseOne
 
