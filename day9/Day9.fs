@@ -1,6 +1,5 @@
 module AoC2022.Day9
 
-open System.Text.RegularExpressions
 open FSharpPlus
 open AoC2022.utils
 open Microsoft.FSharp.Core
